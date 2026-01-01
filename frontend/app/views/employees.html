@@ -1,12 +1,84 @@
 <div class="card shadow-sm">
   <div class="card-body">
-    <div class="d-flex justify-content-between align-items-center">
-      <h5 class="card-title m-0">{{ title }}</h5>
-      <button class="btn btn-primary" disabled>Add Employee (Sprint 1)</button>
+    <div class="d-flex flex-column flex-md-row gap-2 justify-content-between align-items-md-center mb-3">
+      <div>
+        <h5 class="card-title mb-0">{{ title }}</h5>
+        <small class="text-muted">Manage employee records</small>
+      </div>
+
+      <div class="d-flex flex-column flex-sm-row gap-2">
+        <input
+          type="text"
+          class="form-control"
+          style="max-width: 260px;"
+          placeholder="Search by name..."
+          ng-model="searchTerm"
+          ng-model-options="{ debounce: 300 }"
+          ng-change="onSearch()"
+          ng-disabled="loading"
+        />
+
+        <select
+          class="form-select"
+          style="max-width: 120px;"
+          ng-model="meta.limit"
+          ng-options="o for o in limitOptions"
+          ng-change="changeLimit()"
+          ng-disabled="loading"
+        ></select>
+
+        <button class="btn btn-primary" ng-click="goToNew()" ng-disabled="loading">
+          Add Employee
+        </button>
+      </div>
     </div>
-    <hr />
-    <div class="alert alert-info mb-0">
-      Sprint 0: UI skeleton ready. CRUD akan dibuat di Sprint 1.
+
+    <div ng-if="error" class="alert alert-danger">{{ error }}</div>
+    <div ng-if="loading" class="alert alert-secondary mb-3">Loading...</div>
+
+    <div class="table-responsive" ng-if="!loading">
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th style="width: 90px;">ID</th>
+            <th>Name</th>
+            <th>Position</th>
+            <th class="text-end">Salary</th>
+            <th>CreatedAt</th>
+            <th style="width: 170px;">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="item in items">
+            <td>{{ item.EmployeeID }}</td>
+            <td>{{ item.Name }}</td>
+            <td>{{ item.Position || '-' }}</td>
+            <td class="text-end">Rp {{ item.Salary | number:0 }}</td>
+            <td>{{ item.CreatedAt | date:'yyyy-MM-dd HH:mm' }}</td>
+            <td>
+              <div class="btn-group btn-group-sm" role="group">
+                <button class="btn btn-outline-secondary" ng-click="edit(item.EmployeeID)">Edit</button>
+                <button class="btn btn-outline-danger" ng-click="delete(item)">Delete</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr ng-if="items.length === 0">
+            <td colspan="6" class="text-center text-muted py-4">No employees found.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center" ng-if="!loading">
+      <div class="text-muted small">
+        Total: {{ meta.total }} | Page {{ meta.page }} of {{ meta.totalPages }}
+      </div>
+
+      <div class="btn-group btn-group-sm" role="group">
+        <button class="btn btn-outline-secondary" ng-disabled="meta.page <= 1" ng-click="prevPage()">Prev</button>
+        <button class="btn btn-outline-secondary" ng-disabled="meta.page >= meta.totalPages" ng-click="nextPage()">Next</button>
+      </div>
     </div>
   </div>
 </div>
