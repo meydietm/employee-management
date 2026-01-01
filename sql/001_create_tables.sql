@@ -1,0 +1,20 @@
+IF DB_ID('EmployeeDB') IS NULL
+BEGIN
+  CREATE DATABASE EmployeeDB;
+END
+GO
+
+USE EmployeeDB;
+GO
+
+IF OBJECT_ID('dbo.Employees', 'U') IS NULL
+BEGIN
+  CREATE TABLE dbo.Employees (
+    EmployeeID INT IDENTITY(1,1) PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Position VARCHAR(50) NULL,
+    Salary DECIMAL(12,2) NOT NULL,
+    CreatedAt DATETIME NOT NULL CONSTRAINT DF_Employees_CreatedAt DEFAULT GETDATE()
+  );
+END
+GO
