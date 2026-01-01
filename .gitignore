@@ -4,6 +4,7 @@ npm-debug.log*
 
 # Env
 .env
+backend/.env
 
 # OS / tools
 .DS_Store
